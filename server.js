@@ -35,7 +35,6 @@ function loadProducts() {
 // Charger les produits au démarrage du serveur
 loadProducts();
 
-
 // Route pour recevoir des données du client
 app.post('/send-data', (req, res) => {
     console.log('Données reçues du client:', req.body);
@@ -46,6 +45,9 @@ app.post('/send-data', (req, res) => {
 app.get('/products', (req, res) => {
     res.json(products);
 });
+
+// Routes pour gérer le panier
+let panier = [];
 
 app.post('/api/add-to-cart', (req, res) => {
     const { product } = req.body;
@@ -121,26 +123,10 @@ app.post('/submit-form', (req, res) => {
     res.json({ produits: filteredProducts });
 });
 
-// Fonction pour démarrer le serveur
-function startServer(port) {
-    const server = app.listen(port, () => {
-        console.log(`Serveur backend démarré sur le port ${port}`);
-    });
-
-    server.on('error', (err) => {
-        console.error(`Erreur de démarrage du serveur sur le port ${port}:`, err);
-        if (err.code === 'EADDRINUSE') {
-            port++;
-            console.log(`Tentative de démarrage du serveur sur le port suivant, ${port}...`);
-            startServer(port);
-        } else {
-            process.exit(1);
-        }
-    });
-}
-
-// Port initial pour démarrer le serveur
-let port = 5000;
+// Utiliser le port fourni par Render ou 5000 par défaut pour le développement local
+const port = process.env.PORT || 5000;
 
 // Démarrer le serveur
-startServer(port);
+app.listen(port, () => {
+    console.log(`Serveur backend démarré sur le port ${port}`);
+});
